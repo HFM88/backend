@@ -28,6 +28,7 @@ user_session_helper.appendSessionUser = async function(args){
         [args.id , token, new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 10)]
     )
     args.res.cookie('user_access_tkn' , token);
+    console.log('send cookie')
     return token;
 }
 

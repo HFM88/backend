@@ -14,8 +14,10 @@ const port = 5000
 app.use(cookie_parser());
 app.use(body_parser.urlencoded({ extended: false }))
 app.use(body_parser.json())
-app.use(cors())
-
+app.use(cors({
+  origin: 'http://localhost:3000', // Allow requests from the client running on port 3000
+  credentials: true, // Allow cookies to be sent
+}));
 
 // SV SCRIPTS INIT
 async function __main(){

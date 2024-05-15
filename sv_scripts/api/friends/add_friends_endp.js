@@ -51,7 +51,6 @@ add_friends_endp.init = function(app , collection){
             return
         }else{
             if(cNode[0][0].u1 == userData[0][0].id){ // accept request
-                console.log('accept');
                 await collection['dbhelper.js'].conn.execute(
                     'UPDATE `user_nodes` SET `status` = 1 WHERE `id` = ?',
                     [cNode[0][0].id]

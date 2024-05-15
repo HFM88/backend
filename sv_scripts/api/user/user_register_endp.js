@@ -32,8 +32,8 @@ user_register_endp.init = function(app , collection){
     // ACCOUNT CREATION
     try{
       let result = await collection['dbhelper.js'].conn.execute(
-        'INSERT INTO `user_data`(`email`, `username`, `password`) VALUES (?, ?, ?)', 
-        [req.body.email , req.body.username, await bcrypt.hash(req.body.password , 10) ]
+        'INSERT INTO `user_data`(`email`, `username`, `password` , `displayname`) VALUES (?, ?, ?, ?)', 
+        [req.body.email , req.body.username, await bcrypt.hash(req.body.password , 10) , req.body.username]
       );
       await collection['user_session_helper.js'].appendSessionUser({
         collection : collection,

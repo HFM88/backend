@@ -2,6 +2,7 @@
 const express = require('express')
 const cookie_parser = require('cookie-parser');
 const body_parser = require('body-parser');
+const cors = require('cors')
 
 const fs = require('fs');
 const path = require('path');
@@ -13,6 +14,7 @@ const port = 5000
 app.use(cookie_parser());
 app.use(body_parser.urlencoded({ extended: false }))
 app.use(body_parser.json())
+app.use(cors())
 
 
 // SV SCRIPTS INIT

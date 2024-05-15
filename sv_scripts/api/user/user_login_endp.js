@@ -20,8 +20,9 @@ user_login_endp.init = function(app , collection){
             [req.body.username]
         )
         if(!result[0]){res.status(401).send('Unauthorized'); return;}
-        console.log(result[0]);
-        if( await bcrypt.compare(req.body.password , result[0][0].password) ){res.status(401).send('Unauthorized'); return;}
+        console.log(await bcrypt.compare(req.body.password , result[0][0].password) );
+        console.log(result[0][0].password , req.body.password)
+        if( ! await bcrypt.compare(req.body.password , result[0][0].password) ){res.status(401).send('Unauthorized'); return;}
         await collection['user_session_helper.js'].appendSessionUser({
           collection : collection,
           id : result[0][0].id,

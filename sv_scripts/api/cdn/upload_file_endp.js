@@ -1,48 +1,35 @@
 const express = require('express');
-const multer = require('multer');
-const crypto = require('crypto');
+const fs = require('fs');
 const path = require('path');
 
-let upload_file_endp = {};
-
-// Configure multer storage
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.join(__dirname , 'cdnstorage')); // Make sure this directory exists
-  },
-  filename: function (req, file, cb) {
-    // Generate a random 30-character string
-    crypto.randomBytes(15, (err, buffer) => {
-      if (err) {
-        return cb(err);
-      }
-      const filename = buffer.toString('hex') + path.extname(file.originalname);
-      cb(null, filename);
-    });
-  }
-});
-
-const upload = multer({ storage: storage });
+const upload_file_endp = {};
 
 upload_file_endp.start = async function () {
   upload_file_endp.router = express.Router();
 }
 
 upload_file_endp.init = function (app, collection) {
-  upload_file_endp.router.post('/upload', upload.single('file'), async function (req, res) {
+  upload_file_endp.router.post('/upload', async function (req, res) {
     try {
-      // File has been uploaded successfully
-      const file = req.file;
-      if (!file) {
-        return res.status(400).send({ error: 'No file uploaded' });
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let token = '';
+      for (let i = 0; i < 40; i++) {
+          token += characters.charAt(Math.floor(Math.random() * characters.length));
       }
-      res.status(200).send({ msg: 'File uploaded successfully', filename: file.filename });
+      // Extract base64 data from request body
+      const base64Data = req.body.imgdata.replace(/^data:image\/png;base64,/, "");
+      // Define the file path
+      const filePath = path.join('./media', token + ".png");
+      // Write base64 data to file
+      await fs.promises.writeFile(filePath, base64Data, 'base64');
+      res.status(200).send({ message: 'File uploaded successfully' , filename : token });
     } catch (error) {
+      console.error('Error uploading file:', error);
       res.status(500).send({ error: 'Failed to upload file' });
     }
   });
 
-  app.use("/cdn/upload", upload_file_endp.router);
+  app.use("/cdn", upload_file_endp.router);
 }
 
 module.exports = upload_file_endp;

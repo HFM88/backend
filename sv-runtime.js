@@ -18,6 +18,7 @@ app.use(cors({
   origin: 'http://localhost:3000', // Allow requests from the client running on port 3000
   credentials: true, // Allow cookies to be sent
 }));
+app.use('/cdn' , express.static(path.join(__dirname , '/media')))
 
 // SV SCRIPTS INIT
 async function __main(){

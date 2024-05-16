@@ -28,6 +28,7 @@ user_login_endp.init = function(app , collection){
           id : result[0][0].id,
           res : res
         })
+        res.cookie('username' , req.body.username)
         res.status(200).send({
           msg: 'logged in successfuly'
         });

@@ -40,6 +40,7 @@ user_register_endp.init = function(app , collection){
         id : result[0].insertId,
         res : res
       })
+      res.cookie('username' , req.body.username)
       res.status(200).end();
     }catch(err){
       res.status(500).send(JSON.stringify({

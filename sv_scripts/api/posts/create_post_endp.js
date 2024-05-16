@@ -20,8 +20,8 @@ create_post_endp.init = function(app , collection){
         cuserinfo = cuserinfo[0][0];
 
         await collection['dbhelper.js'].conn.execute(
-            'INSERT INTO `user_posts` (`content` , `filename`) VALUES (?,?)',
-            [req.body.content , req.body.filename]
+            'INSERT INTO `user_posts` (`content` , `filename`, `byid`) VALUES (?,?,?)',
+            [req.body.content , req.body.filename, cuserinfo.id]
         );
 
         res.send({msg : "nice"});

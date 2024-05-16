@@ -17,7 +17,8 @@
     "ejs": "^3.1.9",
     "express": "^4.18.3",
     "mysql2": "^3.9.6",
-    "nodemailer": "^6.9.13"
+    "nodemailer": "^6.9.13",
+    "ws": "^8.17.0"
   },
   "devDependencies": {
     "tailwindcss": "^3.4.1"

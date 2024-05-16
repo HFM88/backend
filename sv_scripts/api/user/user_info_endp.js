@@ -11,22 +11,41 @@ user_info_endp.init = function(app , collection){
 
   user_info_endp.router.get('/get', async function(req, res){
     let valid = true;
-    if(!req.body.username) valid = false; 
+    if(!req.body.targetUser) valid = false; 
     if(!valid){ res.status(400).send('Invalid request'); return;}
     //401 for invalid creds
     try{
         let result = await collection['dbhelper.js'].conn.execute(
             'SELECT * FROM `user_data` WHERE `username` = (?)',
-            [req.body.username]
+            [req.body.targetUser]
         )
         if(!result[0]){res.status(404).send('not found'); return;}
-        res.send({
+
+        let response = {
             displayname : result[0][0].displayname,
             username : result[0][0].username,
             joindate : result[0][0].joindate,
             rank : result[0][0].rank,
             feed : result[0][0].feed,
-        })
+        }
+        
+        if(req.cookies['user_access_tkn']){ // return friends status
+            let cuserInfo = await collection['user_session_helper.js'].fetchUserDataFromSession({
+                collection : collection,
+                user_access_tkn : req.cookies['user_access_tkn']
+            })
+            if (cuserInfo[0]){
+                let isFriends = await collection['dbhelper.js'].conn.execute(
+                    'SELECT * FROM `user_nodes` WHERE ( `u1` = (?) AND `u2` = (?) ) OR ( `u1` = (?) AND `u2` = (?) )',
+                    [cuserInfo[0][0].id , cuserInfo[0][0].id , cuserInfo[0][0].id , cuserInfo[0][0].id]
+                )
+                console.log(isFriends)
+                if(isFriends[0].length = 0 && isFriends[0][0].status == 1) response['isFriends'] = true; else response['isFriends'] = false;
+            }
+        }
+
+        res.send(response);
+
     }catch(err){
         res.status(500).send(JSON.stringify({
             message: 'Internal server error',

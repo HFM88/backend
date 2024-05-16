@@ -36,11 +36,12 @@ add_friends_endp.init = function(app , collection){
         });
 
         let cNode = await collection['dbhelper.js'].conn.execute(
-            'SELECT * FROM `user_nodes` WHERE `u1` = (?) AND `u2` = (?)',
-            [userData[0][0].id , targetUserData[0][0].id]
+            'SELECT * FROM `user_nodes` WHERE (`u1` = (?) AND `u2` = (?)) OR (`u1` = (?) AND `u2` = (?))',
+            [userData[0][0].id , targetUserData[0][0].id, targetUserData[0][0].id ,userData[0][0].id]
         );
 
         console.log(userData[0][0].id , targetUserData[0][0].id);
+        console.log(cNode);
 
         if(!cNode[0][0]){// send request
             cNode = await collection['dbhelper.js'].conn.execute(
@@ -50,7 +51,7 @@ add_friends_endp.init = function(app , collection){
             res.end();
             return
         }else{
-            if(cNode[0][0].u1 == userData[0][0].id){ // accept request
+            if(cNode[0][0].u2 == userData[0][0].id){ // accept request
                 await collection['dbhelper.js'].conn.execute(
                     'UPDATE `user_nodes` SET `status` = 1 WHERE `id` = ?',
                     [cNode[0][0].id]

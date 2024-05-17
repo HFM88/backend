@@ -3,7 +3,7 @@
    npm install
    ```
 
-### Run the client
+### Run the server
 1. ```sh
    npm run init-sv
    ```

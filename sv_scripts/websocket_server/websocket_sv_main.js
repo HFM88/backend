@@ -21,24 +21,34 @@ websocket_sv_main.init = function(app , collection){
             tick : new Date()
         })
 
-        console.table(websocket_sv_main.data)
 
-        ws.on('message', function message(data) {
-            data = JSON.parse(data);
+        ws.on('message', async function message(data) {
 
+            try{
+                data = JSON.parse(data);
+            }catch(err){
+                ws.close();
+                return;
+            }
+            
             // handshake
             if(data.actid == 0){
                 for(const inst of websocket_sv_main.data){
                     if (inst.ws == ws) {
-                        const userInfo = collection['user_session_helper.js'].fetchUserDataFromSession({
-                            collection : collection,
-                            user_session_tkn : data['user_session_tkn']
-                        })[0][0]
-                        if(!userInfo){
+                        try {
+                            const userInfo = await collection['user_session_helper.js'].fetchUserDataFromSession({
+                                collection : collection,
+                                user_access_tkn : data['user_access_tkn']
+                            })
+                            if(!userInfo){
+                                ws.close();
+                                return
+                            }
+                            inst.userInfo = userInfo[0][0];
+                            inst.receptor = data.receptor;
+                        }catch(err){
                             ws.close();
-                            return
                         }
-                        inst.userInfo = userInfo
                         break;
                     }
                 }
@@ -55,12 +65,27 @@ websocket_sv_main.init = function(app , collection){
                 }
             }
 
-            // event
+            // message
             if(data.actid == 2){
-                if(data.evid == 0){
+                try{
+                    for(const inst1 of websocket_sv_main.data){
+                        if (inst1.ws == ws) {
+                            for(const inst2 of websocket_sv_main.data){
+                                console.log(123);
+                                if (inst1.receptor == inst2.userInfo.username) {
+                                    console.log("mesaj");
+                                    inst2.ws.send(JSON.stringify({msg : data.msg}))
+                                    break;
+                                }
+                            }
+    
+                            break;
+                        }
+                    }
+                }catch{
 
-                    return;
                 }
+                return;
             }
             
         });
@@ -74,7 +99,7 @@ websocket_sv_main.init = function(app , collection){
             }
         }        
 
-        //console.table(websocket_sv_main.data)
+        console.table(websocket_sv_main.data)
     }, 1000);
 }
 

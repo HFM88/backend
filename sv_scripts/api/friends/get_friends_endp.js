@@ -34,7 +34,6 @@ get_friends_endp.init = function(app , collection){
             requestingUserData = requestingUserData[0][0];
             requestingUserData.password = undefined;
             requestingUserData.email = undefined;
-            console.log(requestingUserData);
             response.push(requestingUserData);
         }
         

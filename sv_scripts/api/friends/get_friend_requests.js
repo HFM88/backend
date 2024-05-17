@@ -12,8 +12,6 @@ get_friend_requests.init = function(app , collection){
     if(!req.cookies['user_access_tkn']) return res.status(404).send({err:'nousr'});
     try{ 
 
-        console.log(1)
-
         let cuserinfo = await collection['user_session_helper.js'].fetchUserDataFromSession({
             collection : collection,
             user_access_tkn : req.cookies['user_access_tkn']

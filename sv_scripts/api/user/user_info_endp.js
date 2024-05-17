@@ -85,7 +85,6 @@ user_info_endp.init = function(app , collection){
         collection : collection,
         user_access_tkn : req.cookies['user_access_tkn']
        })
-       console.log(result);
        if(result[0][0]){
         await collection['dbhelper.js'].conn.execute(
             'UPDATE `user_data` SET `feed` = ? WHERE id = ?',

@@ -102,6 +102,35 @@ user_info_endp.init = function(app , collection){
     }
   })
 
+  user_info_endp.router.post('/setpfp', async function(req, res){
+    let valid = true;
+    if(!req.body.value) valid = false; 
+    if(!req.cookies['user_access_tkn']) valid = false;
+    if(!valid){ res.status(400).send('Invalid request'); return;}
+    //401 for invalid creds
+    try{
+       let result = await collection['user_session_helper.js'].fetchUserDataFromSession({
+        collection : collection,
+        user_access_tkn : req.cookies['user_access_tkn']
+       })
+       if(result[0][0]){
+        await collection['dbhelper.js'].conn.execute(
+            'UPDATE `user_data` SET `profilepic` = ? WHERE id = ?',
+            [req.body.value , result[0][0].id]
+        )
+        res.status(200).send({msg : 'success'})
+       }else {
+        res.status(404).send({err : 'no user'})
+       }
+    }catch(err){
+        res.status(500).send(JSON.stringify({
+            message: 'Internal server error',
+            err : err.message
+        }));
+    }
+  })
+
+
   user_info_endp.router.post('/setdisplayname', async function(req, res){
     let valid = true;
     if(!req.body.value) valid = false; 

@@ -9,6 +9,8 @@ add_friends_endp.start = async function(){
 add_friends_endp.init = function(app , collection){
 
   add_friends_endp.router.post('/add', async function(req, res){
+    console.log(req.body.targetUser);
+
     let valid = true;
     if(!req.cookies['user_access_tkn']) valid = false;
     if(!req.body.targetUser) valid = false;

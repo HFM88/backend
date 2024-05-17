@@ -58,7 +58,7 @@ websocket_sv_main.init = function(app , collection){
             // event
             if(data.actid == 2){
                 if(data.evid == 0){
-                    
+
                     return;
                 }
             }
@@ -74,7 +74,7 @@ websocket_sv_main.init = function(app , collection){
             }
         }        
 
-        console.table(websocket_sv_main.data)
+        //console.table(websocket_sv_main.data)
     }, 1000);
 }
 

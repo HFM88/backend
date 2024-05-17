@@ -12,13 +12,15 @@ const port = 5000
 
 // MIDDLEWARES
 app.use(cookie_parser());
-app.use(body_parser.urlencoded({ extended: false }))
-app.use(body_parser.json())
+app.use(body_parser.json({ limit: '10mb' }));
+app.use(body_parser.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cors({
   origin: 'http://localhost:3000', // Allow requests from the client running on port 3000
   credentials: true, // Allow cookies to be sent
 }));
 app.use('/cdn' , express.static(path.join(__dirname , '/media')))
+
+
 
 // SV SCRIPTS INIT
 async function __main(){
